@@ -13,8 +13,7 @@ export default function AuthLayout({
         <div className="bg-white/80 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm border border-gray-200">
           <Link
             href="/"
-            className="inline-flex items-center text-sm text-gray-600 hover:text-[#D7195B] transition-colors duration-200"
-          >
+            className="inline-flex items-center text-sm text-gray-600 hover:text-[#D7195B] transition-colors duration-200">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Homepage
           </Link>

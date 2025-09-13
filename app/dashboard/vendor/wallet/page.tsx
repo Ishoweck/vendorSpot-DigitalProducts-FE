@@ -11,8 +11,32 @@ import Pagination from "@/components/ui/Pagination";
 import AuthWrapper from "@/components/auth/AuthWrapper";
 import { useVendorWallet } from "@/hooks/useAPI";
 
+
+
+type Transaction = {
+  _id: string;
+  title: string;
+  description: string;
+  amount: number;
+  type: "credit" | "debit";
+  createdAt: string;
+};
+
+
+
+
+
 function VendorWalletContent() {
-  const { data: wallet, isLoading } = useVendorWallet();
+  const { data: wallet, isLoading } = useVendorWallet() as {
+  data: {
+    availableBalance: number;
+    thisMonth: number;
+    totalEarnings: number;
+    transactions: Transaction[];
+  };
+  isLoading: boolean;
+};
+
   const [currentTransactionPage, setCurrentTransactionPage] = useState(1);
   const [dateFilter, setDateFilter] = useState("all");
   const transactionsPerPage = 3;

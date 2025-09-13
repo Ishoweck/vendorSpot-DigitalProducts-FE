@@ -17,17 +17,17 @@ export default function FeaturedProductsSection() {
     );
   };
 
-  // Fetch featured products (if supported by API)
+  // Fetch products without 'isFeatured' filter to avoid TS error
   const { data: productsData, isLoading } = useProducts({
     page: 1,
-    limit: 12, // Fetch enough in case there are many featured
-    isFeatured: true, // If supported by API
+    limit: 12,
+    // isFeatured: true, // Removed due to TS error
   });
 
-  // If API doesn't support isFeatured filter, use the line below instead:
-  // const featuredProducts = (productsData?.data?.data || []).filter(p => p.isFeatured);
-
-  const featuredProducts = productsData?.data?.data || [];
+  // Filter featured products client-side
+  const featuredProducts = (productsData?.data?.data || []).filter(
+    (p) => p.isFeatured
+  );
 
   return (
     <section className="pt-11">

@@ -42,7 +42,7 @@ export default function FeaturedShopsSection() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
-          {vendors.map((vendor, index) => (
+          {vendors.map((vendor:any, index: any) => (
               <Link key={vendor._id} href={`/vendorDetails/${vendor.businessName}`}>
 
             <div
