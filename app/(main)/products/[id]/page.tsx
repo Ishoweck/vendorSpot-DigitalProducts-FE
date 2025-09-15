@@ -1,3 +1,4 @@
+"use client"
 import ProductDetail from "@/components/products/ProductDetail";
 import FeaturedProductsSection from "@/components/home/FeaturedProductsSection";
 import FeaturedShopsSection from "@/components/home/FeaturedShopsSection";
