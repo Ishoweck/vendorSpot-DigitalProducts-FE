@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -17,11 +17,41 @@ import {
 import { useVerifyPayment, useOrderByPaymentReference } from "@/hooks/useAPI";
 import AuthWrapper from "@/components/auth/AuthWrapper";
 
+interface OrderItem {
+  _id?: string;
+  productId?: Product;
+  name?: string;
+  quantity: number;
+  price: number;
+}
+
+interface Product {
+  _id: string;
+  thumbnail: string;
+  name: string;
+}
+interface ShippingAddress {
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  phone: string;
+}
+
+interface OrderData {
+  orderNumber: string;
+  subtotal: number;
+  tax: number;
+  shippingFee: number;
+  total: number;
+  items: OrderItem[];
+  shippingAddress: ShippingAddress;
+}
+
 export default function CheckoutConfirmationPage() {
   const searchParams = useSearchParams();
   const reference = searchParams.get("reference");
   const trxref = searchParams.get("trxref");
-  const status = searchParams.get("status");
 
   const [paymentStatus, setPaymentStatus] = useState<string>("pending");
   const [orderData, setOrderData] = useState<any>(null);
@@ -30,17 +60,56 @@ export default function CheckoutConfirmationPage() {
   const verifyPayment = useVerifyPayment();
   const { data: orderResponse } = useOrderByPaymentReference(reference || "");
 
+  const attemptCount = useRef(0);
+  const retryTimeout = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
-    if (reference && trxref && status) {
-      if (status === "success") {
-        setPaymentStatus("success");
-        verifyPayment.mutate(reference);
-      } else {
-        setPaymentStatus("failed");
-        setErrorMessage("Payment was not successful. Please try again.");
-      }
+    if (!reference || !trxref) {
+      setPaymentStatus("failed");
+      setErrorMessage("Missing payment reference.");
+      return;
     }
-  }, [reference, trxref, status, verifyPayment]);
+
+    const verify = () => {
+      if (attemptCount.current >= 3 || paymentStatus === "success") {
+        // Stop retrying if max attempts reached or success already
+        return;
+      }
+
+      attemptCount.current += 1;
+
+      verifyPayment.mutate(reference, {
+        onSuccess: () => {
+          setPaymentStatus("success");
+          if (retryTimeout.current) {
+            clearTimeout(retryTimeout.current);
+          }
+        },
+        onError: (error: any) => {
+          if (attemptCount.current < 3) {
+            // Retry after 2 seconds
+            retryTimeout.current = setTimeout(verify, 2000);
+          } else {
+            setPaymentStatus("failed");
+
+            console.log(error);
+            
+            setErrorMessage(
+              error?.message || "Payment verification failed. Please try again."
+            );
+          }
+        },
+      });
+    };
+
+    verify();
+
+    return () => {
+      if (retryTimeout.current) {
+        clearTimeout(retryTimeout.current);
+      }
+    };
+  }, [reference, trxref, paymentStatus, verifyPayment]);
 
   useEffect(() => {
     if (orderResponse?.data?.data) {
@@ -48,10 +117,13 @@ export default function CheckoutConfirmationPage() {
     }
   }, [orderResponse]);
 
+
+
   const handleRetryPayment = () => {
     window.location.href = "/checkout";
   };
 
+  // Show loading state while verifying payment
   if (paymentStatus === "pending") {
     return (
       <div className="min-h-screen bg-neutral-50">
@@ -72,6 +144,7 @@ export default function CheckoutConfirmationPage() {
     );
   }
 
+  // Show failed payment
   if (paymentStatus === "failed") {
     return (
       <div className="min-h-screen bg-neutral-50">
@@ -100,6 +173,7 @@ export default function CheckoutConfirmationPage() {
     );
   }
 
+  // Show loading order details after payment success but before order data loaded
   if (paymentStatus === "success" && !orderData) {
     return (
       <div className="min-h-screen bg-neutral-50">
@@ -118,6 +192,7 @@ export default function CheckoutConfirmationPage() {
     );
   }
 
+  // If no order data after success
   if (!orderData) {
     return (
       <div className="min-h-screen bg-neutral-50">
@@ -138,11 +213,10 @@ export default function CheckoutConfirmationPage() {
     );
   }
 
-  const subtotal = orderData.subtotal || 0;
-  const tax = orderData.tax || 0;
-  const shippingFee = orderData.shippingFee || 0;
-  const total = orderData.total || 0;
+  // Destructure for easier use
+  const { subtotal = 0, tax = 0, shippingFee = 0, total = 0 } = orderData;
 
+  // Calculate estimated delivery date
   const estimatedDelivery = new Date();
   estimatedDelivery.setDate(estimatedDelivery.getDate() + 5);
 
@@ -176,9 +250,9 @@ export default function CheckoutConfirmationPage() {
                   Order Details
                 </h2>
                 <div className="space-y-4">
-                  {orderData.items?.map((item: any) => (
+                  {orderData.items?.map((item: OrderItem) => (
                     <div
-                      key={item._id || item.productId}
+                      key={item._id || item.productId?._id || item.name}
                       className="flex flex-col sm:flex-row sm:items-center gap-3 sm:space-x-4 pb-4 border-b border-neutral-100 last:border-b-0 last:pb-0"
                     >
                       <div className="relative w-16 h-16 flex-shrink-0">
