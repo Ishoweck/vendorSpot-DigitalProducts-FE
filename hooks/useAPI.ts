@@ -326,20 +326,20 @@ export const useOrderByPaymentReference = (reference: string) => {
   );
 };
 
-export const useCreateOrder = () => {
-  const queryClient = useQueryClient();
+  export const useCreateOrder = () => {
+    const queryClient = useQueryClient();
 
-  return useMutation(ordersAPI.create, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["orders"]);
-      queryClient.invalidateQueries(["cart"]);
-      toast.success("Order created successfully!");
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Failed to create order");
-    },
-  });
-};
+    return useMutation(ordersAPI.create, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["orders"]);
+        queryClient.invalidateQueries(["cart"]);
+        toast.success("Order created successfully oo!");
+      },
+      onError: (error: any) => {
+        toast.error(error.response?.data?.message || "Failed to create order");
+      },
+    });
+  };
 
 // =====================================
 // USER PROFILE HOOKS
