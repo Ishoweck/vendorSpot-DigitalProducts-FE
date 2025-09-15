@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import FullScreenLoader from "../../../components/Loader";
 import ResetPasswordPage from "./ResetPassword";
