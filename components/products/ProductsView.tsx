@@ -36,9 +36,9 @@ export default function ProductsView() {
 
       <div className="mb-5">
         <h2
-          className="text-black font-inter font-medium text-start"
+          className="text-black font-inter font-small text-start"
           style={{
-            fontSize: "24px",
+            fontSize: "18px",
             lineHeight: "100%",
             fontWeight: 500,
           }}
