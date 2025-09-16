@@ -13,7 +13,7 @@ export default function YourComponent() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading delay (e.g., fetching data, verifying token, etc.)
+   
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000); // 2 seconds
@@ -26,16 +26,16 @@ export default function YourComponent() {
   return (
     <div className="bg-[#F8F8F8]">
       <div className="min-h-screen">
-        <SectionWrapper className="pt-8">
-          <ProductDetail />
-        </SectionWrapper>
+        {/* <SectionWrapper className="pt-8"> */}
+          <h1>HELLO</h1>
+        {/* </SectionWrapper>
         <SectionWrapper>
           <FeaturedProductsSection />
         </SectionWrapper>
         <SectionWrapper>
           <FeaturedShopsSection />
         </SectionWrapper>
-        <CTASection />
+        <CTASection /> */}
       </div>
     </div>
   );

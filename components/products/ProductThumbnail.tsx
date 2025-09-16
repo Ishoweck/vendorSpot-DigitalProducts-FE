@@ -1,4 +1,3 @@
-"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -22,7 +21,7 @@ export function ProductThumbnail({
   };
 
   const handleClick = () => {
-    router.push(`/main/products/${product._id}`);
+    router.push(`/products/${product._id}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
