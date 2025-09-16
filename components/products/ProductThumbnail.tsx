@@ -22,7 +22,7 @@ export function ProductThumbnail({
   };
 
   const handleClick = () => {
-    router.push(`/products/${product._id}`);
+    router.push(`/main/products/${product._id}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
