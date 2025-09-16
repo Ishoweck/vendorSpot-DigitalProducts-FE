@@ -21,7 +21,7 @@ export function ProductThumbnail({
   };
 
   const handleClick = () => {
-    router.push(`/cart`);
+    router.push(`/products/${product._id}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
