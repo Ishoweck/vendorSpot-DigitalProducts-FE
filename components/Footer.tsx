@@ -7,11 +7,11 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <p className="text-white font-medium text-sm">
-              Nigeria’s Most Trusted Marketplace — <br />
+            <p className="text-white font-medium text-lg">
+              Nigeria’s Most Trusted Marketplace . <br />
               Shop with Confidence on Vendorspot
             </p>
-            <p className="text-white text-sm">
+            <p className="text-white text-sm text-justify">
               Vendorspot is Nigeria’s most secure online marketplace for safe,
               stress-free buying and selling. Discover trusted vendors near you,
               shop a wide range of products, and enjoy fast delivery with secure

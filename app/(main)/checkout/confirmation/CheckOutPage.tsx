@@ -53,6 +53,9 @@ export default function CheckoutConfirmationPage() {
   const reference = searchParams.get("reference");
   const trxref = searchParams.get("trxref");
 
+  console.log(reference);
+  
+
   const [paymentStatus, setPaymentStatus] = useState<string>("pending");
   const [orderData, setOrderData] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");

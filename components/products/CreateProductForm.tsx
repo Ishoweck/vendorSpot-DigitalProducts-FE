@@ -38,6 +38,12 @@ export default function CreateProductForm() {
   };
 
   const handleSubmit = async () => {
+
+    console.log("file:", formData.file);
+    console.log("thumbnail:", formData.thumbnail);
+    console.log("preview:", formData.preview);
+    console.log("images:", formData.images);
+
     const submitData = new FormData();
 
     submitData.append("name", formData.name);
