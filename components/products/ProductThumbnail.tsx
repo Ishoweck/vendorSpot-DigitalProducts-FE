@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Product } from "@/types/product";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -15,15 +15,30 @@ export function ProductThumbnail({
   className = "",
 }: ProductThumbnailProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const router = useRouter();
 
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
 
+  const handleClick = () => {
+    router.push(`/products/${product._id}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <Link
-      href={`/products/${product._id}`}
-      className={`w-full bg-white rounded-[5px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 h-64 sm:h-80 md:h-96 block ${className}`}
+    <div
+      onClick={handleClick}
+      role="link"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      className={`w-full bg-white rounded-[5px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 h-64 sm:h-80 md:h-96 block cursor-pointer ${className}`}
       style={{ aspectRatio: "255/320" }}
     >
       <div className="bg-[#FFDD00] relative w-full" style={{ height: "72.2%" }}>
@@ -101,6 +116,6 @@ export function ProductThumbnail({
           </span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
