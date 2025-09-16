@@ -1,3 +1,5 @@
+
+
 import { vendorsAPI } from "../../../../lib/api/vendors";
 import { notFound } from "next/navigation";
 
