@@ -44,13 +44,13 @@ export default function FeaturedProductsSection() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="h-80 sm:h-96 md:h-[380px] shadow-md border border-[#9D9C9C] w-full max-w-[306px]"
+              className="shadow-md border border-[#9D9C9C] w-full max-w-full h-auto"
             >
-              <Skeleton className="h-48 sm:h-56 md:h-60 w-full" />
+              <Skeleton className="w-full h-48 sm:h-56 md:h-60" />
               <div className="p-3 sm:p-4 space-y-2">
                 <Skeleton className="h-4 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />
@@ -60,27 +60,32 @@ export default function FeaturedProductsSection() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {featuredProducts.map((product, index) => (
             <div
               key={product._id}
-              className={`h-80 sm:h-96 md:h-[380px] shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-[#9D9C9C] ${
+              className={`shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-[#9D9C9C] ${
                 index >= 2 ? "hidden sm:block" : ""
-              }`}
-              style={{ width: "306px", maxWidth: "100%" }}
+              } w-full max-w-full h-auto`}
             >
-              <div className="relative">
+              <div className="relative w-full pb-[75%]"> {/* 4:3 Aspect Ratio */}
                 <Image
                   src={product.image || "/images/product.png"} // fallback image
                   alt={product.name}
-                  width={400}
-                  height={300}
-                  className="w-full object-cover h-48 sm:h-56 md:h-60"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, 400px"
+                  priority={index < 4} // optionally prioritize first few images
                 />
                 <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
                   <button
                     onClick={() => toggleLike(product._id)}
                     className="p-1.5 sm:p-2 transition-colors duration-200"
+                    aria-label={
+                      likedProducts.includes(product._id)
+                        ? "Unlike product"
+                        : "Like product"
+                    }
                   >
                     <Heart
                       className={`w-4 h-4 sm:w-5 sm:h-5 ${
@@ -93,36 +98,34 @@ export default function FeaturedProductsSection() {
                 </div>
               </div>
 
-              <div className="p-3 sm:p-4 flex flex-col space-y-2 h-32 sm:h-40 md:h-[140px]">
-                <div>
-                  <h3 className="font-semibold text-neutral-900 text-sm sm:text-base">
-                    {product.name}
-                  </h3>
+              <div className="p-4 flex flex-col space-y-2">
+                <h3 className="font-semibold text-neutral-900 text-sm sm:text-base">
+                  {product.name}
+                </h3>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-base sm:text-lg font-bold text-neutral-900">
-                        ₦{product.price?.toLocaleString() || "—"}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-base sm:text-lg font-bold text-neutral-900">
+                      ₦{product.price?.toLocaleString() || "—"}
+                    </span>
+                    {product.originalPrice && (
+                      <span className="text-sm text-neutral-500 line-through">
+                        ₦{product.originalPrice.toLocaleString()}
                       </span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-neutral-500 line-through">
-                          ₦{product.originalPrice.toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-                    {product.discountPercentage && (
-                      <div className="bg-[#D7195B33] rounded px-2 py-1 text-xs">
-                        <span className="text-[#D7195B] font-medium">
-                          -{product.discountPercentage}%
-                        </span>
-                      </div>
                     )}
                   </div>
-
-                  <p className="text-sm text-neutral-600">
-                    {product.shopName} - {product.location}
-                  </p>
+                  {product.discountPercentage && (
+                    <div className="bg-[#D7195B33] rounded px-2 py-1 text-xs">
+                      <span className="text-[#D7195B] font-medium">
+                        -{product.discountPercentage}%
+                      </span>
+                    </div>
+                  )}
                 </div>
+
+                <p className="text-sm text-neutral-600">
+                  {product.shopName} - {product.location}
+                </p>
 
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (

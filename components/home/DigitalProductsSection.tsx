@@ -14,22 +14,21 @@ export default function DigitalProductsSection() {
   const products = productsData?.data?.data || [];
 
   const renderSkeletons = () => (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
+    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
       {[...Array(8)].map((_, i) => (
         <div
           key={i}
-          className="w-full bg-white rounded-[5px] overflow-hidden shadow-md h-64 sm:h-80 md:h-96"
+          className="w-full bg-white rounded-[5px] overflow-hidden shadow-md h-auto"
+          style={{ minHeight: "280px" }} // smaller min-height
         >
-          <div className="bg-gray-200 h-[72.2%] animate-pulse" />
-          <div className="bg-white p-2 sm:p-3 md:py-4 md:px-[15px] h-[27.8%] space-y-2">
+          <div className="bg-gray-200 animate-pulse w-full aspect-[4/3]" />
+          <div className="bg-white p-3 sm:p-4 md:py-5 md:px-6 space-y-2">
             <Skeleton className="h-3 w-3/4" />
             <Skeleton className="h-4 w-1/2" />
             <div className="flex items-center gap-2">
-              <Skeleton className="h-2 w-2" />
-              <Skeleton className="h-2 w-2" />
-              <Skeleton className="h-2 w-2" />
-              <Skeleton className="h-2 w-2" />
-              <Skeleton className="h-2 w-2" />
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-2 w-2" />
+              ))}
             </div>
           </div>
         </div>
@@ -39,11 +38,11 @@ export default function DigitalProductsSection() {
 
   return (
     <section className="py-8 sm:py-12 md:py-16 bg-[#D7195B]">
-      <div className="text-center mb-8 sm:mb-10 md:mb-12">
+      <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4">
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white font-display mb-4">
           Explore. Download. <span className="bg-black px-2">Grow.</span>
         </h2>
-        <p className="text-white text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
+        <p className="text-white text-base sm:text-lg md:text-xl max-w-2xl mx-auto">
           Digital products made to fuel your business journey.
         </p>
       </div>
@@ -52,9 +51,13 @@ export default function DigitalProductsSection() {
         {isLoading ? (
           renderSkeletons()
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
             {products.map((product) => (
-              <ProductThumbnail key={product._id} product={product} />
+              <ProductThumbnail
+                key={product._id}
+                product={product}
+                className="w-full h-auto"
+              />
             ))}
           </div>
         )}
