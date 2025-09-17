@@ -14,12 +14,12 @@ export default function DigitalProductsSection() {
   const products = productsData?.data?.data || [];
 
   const renderSkeletons = () => (
-    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
       {[...Array(8)].map((_, i) => (
         <div
           key={i}
           className="w-full bg-white rounded-[5px] overflow-hidden shadow-md h-auto"
-          style={{ minHeight: "280px" }} // smaller min-height
+          style={{ minHeight: "280px" }}
         >
           <div className="bg-gray-200 animate-pulse w-full aspect-[4/3]" />
           <div className="bg-white p-3 sm:p-4 md:py-5 md:px-6 space-y-2">
@@ -51,7 +51,7 @@ export default function DigitalProductsSection() {
         {isLoading ? (
           renderSkeletons()
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
             {products.map((product) => (
               <ProductThumbnail
                 key={product._id}

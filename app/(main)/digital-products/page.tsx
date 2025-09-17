@@ -21,7 +21,7 @@ export default function DigitalProductsPage() {
         <SectionWrapper>
           <FeaturedShopsSection />
         </SectionWrapper>
-        {/* <CTASection /> */}
+        
       </div>
     </div>
   );
