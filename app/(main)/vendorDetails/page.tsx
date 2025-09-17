@@ -1,7 +1,5 @@
-
-
-import { vendorsAPI } from "../../../../lib/api/vendors";
-import { notFound } from "next/navigation";
+import { vendorsAPI } from "../../../lib/api/vendors";
+import {  cookies } from "next/headers";
 
 type Props = {
   params: { businessName: string };
@@ -9,15 +7,17 @@ type Props = {
 
 export default async function VendorDetailPage({ params }: Props) {
   try {
-    console.log("Params:", params);
+    const cookieStore = cookies();
+    const cookieBusinessName = cookieStore.get("selectedBusinessName")?.value;
 
-    const res = await vendorsAPI.getByBusinessName(params.businessName);
-    console.log("Response:", res);
+    const businessNameToUse = cookieBusinessName || params.businessName;
 
+    console.log("Using business name:", businessNameToUse);
+
+    const res = await vendorsAPI.getByBusinessName(businessNameToUse);
     const data = res.data?.data;
-    console.log("Vendor details:", data);
 
-    if (!data) return notFound();
+    // if (!data) return notFound();
 
     const { vendor, products } = data;
     const fullName = `${vendor.user.firstName} ${vendor.user.lastName}`;
@@ -27,7 +27,7 @@ export default async function VendorDetailPage({ params }: Props) {
         <h1 className="text-4xl font-extrabold mb-3 text-indigo-600">
           {vendor.businessName}
         </h1>
-        
+
         {vendor.businessDescription && (
           <p className="text-lg text-gray-600 mb-6">{vendor.businessDescription}</p>
         )}
@@ -92,6 +92,6 @@ export default async function VendorDetailPage({ params }: Props) {
       </div>
     );
   } catch (error) {
-    return notFound();
+    // return notFound();
   }
 }

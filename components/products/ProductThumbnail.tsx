@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types/product";
 import { Skeleton } from "@/components/ui/skeleton";
+import Cookies from "js-cookie";
 
 interface ProductThumbnailProps {
   product: Product;
@@ -20,9 +21,12 @@ export function ProductThumbnail({
     setImageLoaded(true);
   };
 
-  const handleClick = () => {
-    router.push(`/productsDetail`);
-  };
+
+const handleClick = () => {
+  Cookies.set("productId", product._id, { path: "/" });
+  router.push(`/products/productDetails`);
+};
+
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {

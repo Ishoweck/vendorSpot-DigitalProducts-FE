@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -39,13 +39,17 @@ import { Notification } from "@/components/ui/Notification";
 import { Skeleton } from "@/components/ui/skeleton";
 import { smoothScrollToSection } from "@/lib/utils";
 import { getCartItems, normalizeCartItem } from "@/lib/utils/cartUtils";
+import Cookies from "js-cookie";
+
 
 export default function ProductDetail() {
   const params = useParams();
-  const productId = params.id as string;
+  // const productId = params.id as string;
   const router = useRouter();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [productId, setProductId] = useState<string | null>(null);
+
   const [productDetailsExpanded, setProductDetailsExpanded] = useState(false);
   const [notification, setNotification] = useState<{
     message: string;
@@ -59,6 +63,13 @@ export default function ProductDetail() {
   const user = userProfile?.data?.data;
   const isVendor = user?.role === "VENDOR";
 
+
+
+  useEffect(() => {
+  const id = Cookies.get("productId");
+  if (id) setProductId(id);
+  else router.push("/"); // fallback if no productId is found
+}, []);
   const {
     savedItems,
     cartItems,

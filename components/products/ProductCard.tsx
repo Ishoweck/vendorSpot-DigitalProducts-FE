@@ -81,7 +81,7 @@ export function ProductCard({ product, viewMode }: ProductCardProps) {
   const normalizedCartItem = normalizeCartItem(cartItem);
 
   const handleCardClick = () => {
-    router.push(`/products/${product._id}`);
+    router.push(`/products/productDetails`);
   };
 
   const handleImageLoad = () => {
