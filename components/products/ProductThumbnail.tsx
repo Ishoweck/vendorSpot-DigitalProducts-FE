@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types/product";
@@ -21,12 +20,10 @@ export function ProductThumbnail({
     setImageLoaded(true);
   };
 
-
-const handleClick = () => {
-  Cookies.set("productId", product._id, { path: "/" });
-  router.push(`/products/productDetails`);
-};
-
+  const handleClick = () => {
+    Cookies.set("productId", product._id, { path: "/" });
+    router.push(`/products/productDetails`);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -41,11 +38,11 @@ const handleClick = () => {
       role="link"
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      className={`w-full bg-white rounded-[5px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 h-64 sm:h-80 md:h-96 block cursor-pointer ${className}`}
-      style={{ aspectRatio: "255/320" }}
+      className={`w-full bg-white rounded-[5px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 block cursor-pointer ${className}`}
     >
-      <div className="bg-[#FFDD00] relative w-full" style={{ height: "72.2%" }}>
-        {!imageLoaded && <Skeleton className="w-full h-full" />}
+      {/* Image Section */}
+      <div className="bg-[#FFDD00] w-full aspect-[255/320] relative">
+        {!imageLoaded && <Skeleton className="w-full h-full absolute top-0 left-0" />}
         <img
           src={product.thumbnail || "/api/placeholder/200/150"}
           alt={product.name}
@@ -54,11 +51,9 @@ const handleClick = () => {
         />
       </div>
 
-      <div
-        className="bg-white p-2 sm:p-3 md:py-4 md:px-[15px] flex flex-col space-y-1.5 sm:space-y-2"
-        style={{ height: "27.8%" }}
-      >
-        <div className="space-y-1.5 sm:space-y-2">
+      {/* Info Section - No height restriction */}
+      <div className="bg-white p-3 sm:p-3 md:py-4 md:px-[15px] flex flex-col space-y-2 sm:space-y-2">
+        <div className="space-y-2">
           <h3
             className="text-[#000000B2] font-inter font-normal line-clamp-2"
             style={{ fontSize: "12px", lineHeight: "120%" }}

@@ -48,7 +48,7 @@ export default function ProductDetail() {
   const router = useRouter();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [productId, setProductId] = useState<string | null>(null);
+  const [productId, setProductId] = useState("");
 
   const [productDetailsExpanded, setProductDetailsExpanded] = useState(false);
   const [notification, setNotification] = useState<{
