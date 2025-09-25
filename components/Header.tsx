@@ -167,18 +167,29 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-[60]">
       {showBanner && (
-        <div
-          className={`bg-[#FC5991] text-white text-center px-4 text-sm flex items-center justify-center transition-all duration-300 ease-out overflow-hidden ${
-            advertState === "expanded"
-              ? "h-[60px]"
-              : advertState === "compact"
-                ? "h-[40px]"
-                : "h-0"
-          }`}
-        >
-          <p className="font-medium whitespace-nowrap">Advert Banner</p>
-        </div>
-      )}
+  <div
+    className={`overflow-hidden transition-all duration-300 ease-out ${
+      advertState === "expanded"
+        ? "h-[60px]"
+        : advertState === "compact"
+          ? "h-[40px]"
+          : "h-0"
+    }`}
+  >
+    <Link href="/promotions/special-offer">
+      <Image
+        src="/headerImg.gif" // ✅ Your banner image path here
+        alt="Advert Banner"
+        fill={false} // or layout="responsive" depending on the image aspect ratio
+        width={1440}
+        height={60}
+        className="w-full object-cover"
+        priority
+      />
+    </Link>
+  </div>
+)}
+
 
       <div className="bg-main-bg">
         <div className="max-w-7xl mx-auto px-4">
