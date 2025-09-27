@@ -184,6 +184,7 @@ export default function Header() {
         width={1440}
         height={60}
         className="w-full object-cover"
+        unoptimized
         priority
       />
     </Link>
