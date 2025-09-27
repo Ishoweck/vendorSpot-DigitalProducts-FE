@@ -523,7 +523,7 @@ export default function ProductDetail() {
             onClick={() => setProductDetailsExpanded(!productDetailsExpanded)}
             className="w-full flex items-center justify-between p-4 hover:bg-neutral-100 rounded-lg transition-colors"
           >
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-semibold text-[#D7195B]">
               Product Details
             </h2>
             {productDetailsExpanded ? (
@@ -592,7 +592,7 @@ export default function ProductDetail() {
           className="border-t border-gray-200 p-6 lg:p-8 bg-gray-50"
           id="product-statistics"
         >
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+          <h2 className="text-2xl font-semibold text-[#D7195B] mb-6">
             Product Statistics
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -612,7 +612,7 @@ export default function ProductDetail() {
               <div className="text-2xl font-bold text-[#D7195B]">
                 {product.reviewCount || 0}
               </div>
-              <div className="text-sm text-gray-600">Reviews</div>
+              <div className="text-sm text-[#D7195B]">Reviews</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-[#D7195B]">

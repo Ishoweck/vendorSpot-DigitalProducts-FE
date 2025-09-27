@@ -51,9 +51,9 @@ function VerificationFormContent() {
     switch (field) {
       case "taxId":
         if (!value.trim()) {
-          newErrors.taxId = "Tax ID is required";
-        } else if (value.length < 5) {
-          newErrors.taxId = "Tax ID must be at least 5 characters";
+          newErrors.taxId = "NIN ID is required";
+        } else if (value.length < 11) {
+          newErrors.taxId = "NIN ID must be at least 11 characters";
         } else {
           delete newErrors.taxId;
         }
@@ -180,17 +180,17 @@ function VerificationFormContent() {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Tax & Identity Information
+          National Identification Number (NIN)
         </h3>
         <p className="text-gray-600 text-sm">
-          Please provide your tax identification and upload government-issued
+          Please provide your National identification and upload government-issued
           documents.
         </p>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Tax ID Number <span className="text-red-500">*</span>
+          NIN <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -353,11 +353,11 @@ function VerificationFormContent() {
       <div className="bg-gray-50 rounded-lg p-4 space-y-4">
         <div>
           <h4 className="font-medium text-gray-900 mb-2">
-            Tax & Identity Information
+            NIN
           </h4>
           <div className="space-y-2 text-sm">
             <p>
-              <span className="font-medium">Tax ID:</span> {formData.taxId}
+              <span className="font-medium">NIN ID:</span> {formData.taxId}
             </p>
             <p>
               <span className="font-medium">Documents:</span>{" "}
@@ -416,7 +416,7 @@ function VerificationFormContent() {
   };
 
   const steps = [
-    { number: 1, title: "Tax & Identity", icon: FileText },
+    { number: 1, title: "National Identity Verification", icon: FileText },
     { number: 2, title: "Banking Details", icon: CreditCard },
     { number: 3, title: "Review & Submit", icon: CheckCircle },
   ];

@@ -23,12 +23,24 @@ export default function SignupForm() {
     agreeToTerms: false,
   });
 
+  type FormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  isVendor: boolean;
+  businessName: string;
+  agreeToTerms: boolean;
+};
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
     businessName: "",
   });
 
@@ -96,6 +108,7 @@ export default function SignupForm() {
       lastName: validateName(formData.lastName),
       email: validateEmail(formData.email),
       password: validatePassword(formData.password),
+      confirmPassword: validatePassword(formData.password),
       phone: validatePhone(formData.phone),
       businessName: formData.isVendor
         ? validateBusinessName(formData.businessName)
@@ -130,41 +143,70 @@ export default function SignupForm() {
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value, type, checked } = e.target;
+
+  setFormData((prev) => {
+    const updatedFormData = {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-    }));
+    };
 
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-
-    if (type !== "checkbox") {
-      switch (name) {
-        case "firstName":
-        case "lastName":
-          const nameError = validateName(value);
-          setErrors((prev) => ({ ...prev, [name]: nameError }));
-          break;
-        case "email":
-          const emailError = validateEmail(value);
-          setErrors((prev) => ({ ...prev, [name]: emailError }));
-          break;
-        case "password":
-          const passwordError = validatePassword(value);
-          setErrors((prev) => ({ ...prev, [name]: passwordError }));
-          break;
-        case "phone":
-          const phoneError = validatePhone(value);
-          setErrors((prev) => ({ ...prev, [name]: phoneError }));
-          break;
-        case "businessName":
-          const businessError = validateBusinessName(value);
-          setErrors((prev) => ({ ...prev, [name]: businessError }));
-          break;
-      }
+    
+    // Validate confirmPassword in real time
+    if (name === "password" || name === "confirmPassword") {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        confirmPassword:
+          updatedFormData.confirmPassword &&
+          updatedFormData.password !== updatedFormData.confirmPassword
+            ? "Passwords do not match"
+            : "",
+      }));
     }
-  };
+
+    return updatedFormData;
+  });
+
+  setErrors((prev) => ({ ...prev, [name]: "" }));
+
+  if (type !== "checkbox") {
+    switch (name) {
+      case "firstName":
+      case "lastName":
+        setErrors((prev) => ({
+          ...prev,
+          [name]: validateName(value),
+        }));
+        break;
+      case "email":
+        setErrors((prev) => ({
+          ...prev,
+          [name]: validateEmail(value),
+        }));
+        break;
+      case "password":
+        setErrors((prev) => ({
+          ...prev,
+          [name]: validatePassword(value),
+        }));
+        break;
+      case "phone":
+        setErrors((prev) => ({
+          ...prev,
+          [name]: validatePhone(value),
+        }));
+        break;
+      case "businessName":
+        setErrors((prev) => ({
+          ...prev,
+          [name]: validateBusinessName(value),
+        }));
+        break;
+    }
+  }
+};
+
 
   useEffect(() => {
     const isVendor = searchParams.get("vendor") === "true";
@@ -328,38 +370,44 @@ export default function SignupForm() {
             )}
           </div>
 
-          <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-neutral-700 mb-2"
-            >
-              Confirm Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D7195B] focus:border-transparent"
-                placeholder="Confirm password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showConfirmPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-          </div>
+         <div>
+  <label
+    htmlFor="confirmPassword"
+    className="block text-sm font-medium text-neutral-700 mb-2"
+  >
+    Confirm Password
+  </label>
+  <div className="relative">
+    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
+    <input
+      id="confirmPassword"
+      name="confirmPassword"
+      type={showConfirmPassword ? "text" : "password"}
+      required
+      value={formData.confirmPassword}
+      onChange={handleChange}
+      className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D7195B] focus:border-transparent ${
+        errors.confirmPassword ? "border-red-500" : "border-gray-300"
+      }`}
+      placeholder="Confirm password"
+    />
+    <button
+      type="button"
+      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+    >
+      {showConfirmPassword ? (
+        <EyeOff className="w-5 h-5" />
+      ) : (
+        <Eye className="w-5 h-5" />
+      )}
+    </button>
+  </div>
+  {errors.confirmPassword && (
+    <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
+  )}
+</div>
+
 
           <div className="flex items-center">
             <input
@@ -424,6 +472,7 @@ export default function SignupForm() {
               <Link
                 href="https://www.vendorspotng.com/terms"
                 className="text-[#D7195B] hover:text-[#B01548]"
+                target="_blank"
               >
                 Terms of Service
               </Link>{" "}
@@ -431,6 +480,7 @@ export default function SignupForm() {
               <Link
                 href="https://www.vendorspotng.com/privacy-policy"
                 className="text-[#D7195B] hover:text-[#B01548]"
+                target="_blank"
               >
                 Privacy Policy
               </Link>

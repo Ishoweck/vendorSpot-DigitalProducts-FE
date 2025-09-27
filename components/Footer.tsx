@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <p className="text-white font-medium text-lg">
-              Nigeria’s Most Trusted Marketplace . <br />
+              Nigeria’s Most Trusted Marketplace ,
               Shop with Confidence on Vendorspot
             </p>
             <p className="text-white text-sm text-justify">

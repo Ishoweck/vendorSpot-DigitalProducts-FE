@@ -70,7 +70,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                 onClick={onClose}
                 className="flex items-center space-x-3 p-3 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <Users className="w-5 h-5 text-gray-600" />
+                <Users color="pink" className="w-5 h-5 text-gray-600" />
                 <span className="font-medium text-black">Login/Signup</span>
               </Link>
             )}
@@ -87,7 +87,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                 onClick={onClose}
                 className="flex items-center space-x-3 p-3 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <Package className="w-5 h-5 text-gray-600" />
+                <Package color="pink" className="w-5 h-5 text-gray-600" />
                 <span className="font-medium text-black">{category.name}</span>
               </Link>
             ))}
@@ -111,7 +111,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                     : "hover:bg-gray-100 text-black"
                 }`}
               >
-                <Users
+                <Users 
                   className={`w-5 h-5 ${
                     pathname ===
                     (user.role === "VENDOR"
@@ -135,7 +135,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <Package
+                    <Package color="pink"
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/vendor/products"
                           ? "text-[#D7195B]"
@@ -154,7 +154,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <Bell
+                    <Bell 
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/vendor/notifications"
                           ? "text-[#D7195B]"
@@ -173,7 +173,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <Wallet
+                    <Wallet color="pink"
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/vendor/wallet"
                           ? "text-[#D7195B]"
@@ -213,7 +213,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <ShoppingBag
+                    <ShoppingBag color="pink"
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/user/orders"
                           ? "text-[#D7195B]"
@@ -232,7 +232,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <Heart
+                    <Heart color="pink"
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/user/saved-items"
                           ? "text-[#D7195B]"
@@ -251,7 +251,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <Bell
+                    <Bell color="pink"
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/user/notifications"
                           ? "text-[#D7195B]"
@@ -270,7 +270,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <MapPin
+                    <MapPin color="pink"
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/user/shipping-address"
                           ? "text-[#D7195B]"
@@ -289,7 +289,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         : "hover:bg-gray-100 text-black"
                     }`}
                   >
-                    <Settings
+                    <Settings color="pink"
                       className={`w-5 h-5 ${
                         pathname === "/dashboard/user/settings"
                           ? "text-[#D7195B]"

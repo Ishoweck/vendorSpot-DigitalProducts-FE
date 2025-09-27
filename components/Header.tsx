@@ -178,9 +178,9 @@ export default function Header() {
   >
     <Link href="/promotions/special-offer">
       <Image
-        src="/headerImg.gif" // ✅ Your banner image path here
+        src="/headerImg.gif" 
         alt="Advert Banner"
-        fill={false} // or layout="responsive" depending on the image aspect ratio
+        fill={false} 
         width={1440}
         height={60}
         className="w-full object-cover"
