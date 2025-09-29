@@ -10,8 +10,7 @@ import SectionWrapper from "@/components/layout/SectionWrapper";
 import Pagination from "@/components/ui/Pagination";
 import AuthWrapper from "@/components/auth/AuthWrapper";
 import { useVendorWallet } from "@/hooks/useAPI";
-
-
+import { vendorsAPI } from "@/lib/api/vendors";
 
 type Transaction = {
   _id: string;
@@ -19,27 +18,34 @@ type Transaction = {
   description: string;
   amount: number;
   type: "credit" | "debit";
-  createdAt: string;
+  timestamp: string;
 };
-
-
-
-
 
 function VendorWalletContent() {
   const { data: wallet, isLoading } = useVendorWallet() as {
-  data: {
-    availableBalance: number;
-    thisMonth: number;
-    totalEarnings: number;
-    transactions: Transaction[];
+    data: {
+      availableBalance: number;
+      thisMonth: number;
+      totalEarnings: number;
+      transactions: Transaction[];
+    };
+    isLoading: boolean;
   };
-  isLoading: boolean;
-};
 
   const [currentTransactionPage, setCurrentTransactionPage] = useState(1);
   const [dateFilter, setDateFilter] = useState("all");
   const transactionsPerPage = 3;
+
+  // Withdraw modal states
+  const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [bankAccount, setBankAccount] = useState("");
+  const [accountName, setAccountName] = useState(""); // <-- added
+  const [bankName, setBankName] = useState("");
+  const [gateway, setGateway] = useState("manual"); // You can extend to support others
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   if (isLoading) {
     return (
@@ -57,13 +63,59 @@ function VendorWalletContent() {
     );
   }
 
+  // Sort transactions newest first by createdAt date
+  const sortedTransactions = [...wallet.transactions].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
   const totalTransactionPages = Math.ceil(
-    wallet.transactions.length / transactionsPerPage
+    sortedTransactions.length / transactionsPerPage
   );
 
   const startIndex = (currentTransactionPage - 1) * transactionsPerPage;
   const endIndex = startIndex + transactionsPerPage;
-  const currentTransactions = wallet.transactions.slice(startIndex, endIndex);
+  const currentTransactions = sortedTransactions.slice(startIndex, endIndex);
+
+  const handleWithdraw = async () => {
+    setError("");
+    setSuccessMsg("");
+    const amountNum = Number(withdrawAmount);
+    if (isNaN(amountNum) || amountNum <= 0) {
+      setError("Please enter a valid withdrawal amount.");
+      return;
+    }
+    if (amountNum > wallet.availableBalance) {
+      setError("Withdrawal amount exceeds available balance.");
+      return;
+    }
+    if (!bankAccount || !bankName || !accountName) {
+      setError("Please provide bank account, account name, and bank name.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await vendorsAPI.requestWithdrawal({
+        amount: amountNum,
+        bankAccount,
+        accountName, // <-- included here
+        bankName,
+        gateway: "WALLET",
+      });
+      setSuccessMsg("Withdrawal request sent successfully!");
+      setWithdrawAmount("");
+      setBankAccount("");
+      setAccountName(""); // <-- reset
+      setBankName("");
+      setTimeout(() => {
+        setWithdrawModalOpen(false);
+      }, 2000);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to process withdrawal.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -101,6 +153,16 @@ function VendorWalletContent() {
                     ₦{wallet.totalEarnings.toLocaleString()}
                   </p>
                 </div>
+              </div>
+
+              {/* Withdraw Button */}
+              <div className="mb-6">
+                <button
+                  onClick={() => setWithdrawModalOpen(true)}
+                  className="bg-[#D7195B] text-white px-4 py-2 rounded-md hover:bg-[#b01349]"
+                >
+                  Withdraw Funds
+                </button>
               </div>
 
               <div className="bg-white border border-gray-200 rounded-lg p-4 md:p-6">
@@ -161,7 +223,7 @@ function VendorWalletContent() {
                               {transaction.amount.toLocaleString()}
                             </span>
                             <p className="text-xs text-gray-500">
-                              {new Date(transaction.createdAt).toLocaleString()}
+                              {new Date(transaction.timestamp).toLocaleString()}
                             </p>
                           </div>
                         </div>
@@ -188,7 +250,11 @@ function VendorWalletContent() {
                     Quick Actions
                   </h4>
                   <div className="space-y-2">
-                    <button className="w-full text-left text-sm text-blue-700 hover:text-blue-800 py-1">
+                    {/* You may remove the Withdraw Funds button here to avoid duplicates */}
+                    <button
+                      onClick={() => setWithdrawModalOpen(true)}
+                      className="w-full text-left text-sm text-blue-700 hover:text-blue-800 py-1"
+                    >
                       • Withdraw Funds
                     </button>
                     <button className="w-full text-left text-sm text-blue-700 hover:text-blue-800 py-1">
@@ -216,6 +282,85 @@ function VendorWalletContent() {
           </div>
         </div>
       </SectionWrapper>
+
+      {/* Withdraw Modal */}
+      {withdrawModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Request Withdrawal</h2>
+
+            {error && <p className="text-red-600 mb-3">{error}</p>}
+            {successMsg && <p className="text-green-600 mb-3">{successMsg}</p>}
+
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Amount (₦)
+              <input
+                type="number"
+                min="1"
+                max={wallet.availableBalance}
+                value={withdrawAmount}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                disabled={isSubmitting}
+              />
+            </label>
+
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Bank Account Number
+              <input
+                type="text"
+                value={bankAccount}
+                onChange={(e) => setBankAccount(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                disabled={isSubmitting}
+              />
+            </label>
+
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Account Name
+              <input
+                type="text"
+                value={accountName}
+                onChange={(e) => setAccountName(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                disabled={isSubmitting}
+              />
+            </label>
+
+            <label className="block mb-4 text-sm font-medium text-gray-700">
+              Bank Name
+              <input
+                type="text"
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                disabled={isSubmitting}
+              />
+            </label>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  if (!isSubmitting) setWithdrawModalOpen(false);
+                  setError("");
+                  setSuccessMsg("");
+                }}
+                className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleWithdraw}
+                className="bg-[#D7195B] text-white px-4 py-2 rounded-md hover:bg-[#b01349]"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

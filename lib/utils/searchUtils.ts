@@ -28,7 +28,7 @@ export const searchProducts = async (query: string): Promise<SearchResult[]> => 
         id: product._id,
         name: product.name,
         description: product.description,
-        url: `/products/${product._id}`
+        url: `/products/productDetails`
       }));
     }
     return [];

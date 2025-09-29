@@ -37,23 +37,23 @@ export default function CreateProductForm() {
     }
   };
 
+//   useEffect(() => {
+//   console.log("[Form Data Updated]", formData);
+//   console.log("[Step Validity]", isStepValid(currentStep));
+// }, [formData, currentStep, isStepValid]);
+
+
   const handleSubmit = async () => {
 
-    console.log("file:", formData.file);
-    console.log("thumbnail:", formData.thumbnail);
-    console.log("preview:", formData.preview);
-    console.log("images:", formData.images);
-
+    
     const submitData = new FormData();
 
+    
     submitData.append("name", formData.name);
     submitData.append("description", formData.description);
     submitData.append("price", formData.price.toString());
     submitData.append("originalPrice", formData.originalPrice.toString());
-    submitData.append(
-      "discountPercentage",
-      formData.discountPercentage.toString()
-    );
+    submitData.append("discountPercentage", formData.discountPercentage.toString());
     submitData.append("categoryId", formData.categoryId);
     submitData.append("tags", JSON.stringify(formData.tags));
     submitData.append("features", JSON.stringify(formData.features));
@@ -63,18 +63,39 @@ export default function CreateProductForm() {
     submitData.append("licenseDuration", formData.licenseDuration.toString());
     submitData.append("downloadLimit", formData.downloadLimit.toString());
 
-    if (formData.file) {
-      submitData.append("file", formData.file);
+    // Append isLink flag
+    submitData.append("isLink", formData.isLink ? "true" : "false");
+
+    if (formData.isLink) {
+      // Link-based product
+      submitData.append("linkUrl", formData.linkUrl!);
+    } else {
+      // File-based product
+      if (formData.file) {
+        submitData.append("file", formData.file);
+      }
+    
+      if (formData.preview) {
+        submitData.append("preview", formData.preview);
+      }
+      formData.images.forEach((image) => {
+        submitData.append("images", image);
+      });
+
+    
+              console.log(submitData);
+
     }
-    if (formData.thumbnail) {
-      submitData.append("thumbnail", formData.thumbnail);
-    }
-    if (formData.preview) {
-      submitData.append("preview", formData.preview);
-    }
-    formData.images.forEach((image) => {
-      submitData.append("images", image);
-    });
+
+    // ✅ Append thumbnail regardless of product type
+if (formData.thumbnail) {
+  submitData.append("thumbnail", formData.thumbnail);
+}
+
+
+    // Debug log
+console.log("Submitting product with the following data:");
+
 
     createProductMutation.mutate(submitData, {
       onSuccess: () => {
@@ -117,8 +138,8 @@ export default function CreateProductForm() {
                   currentStep > step.id
                     ? "bg-green-500 text-white"
                     : currentStep === step.id
-                      ? "bg-[#D7195B] text-white"
-                      : "bg-gray-200 text-gray-600"
+                    ? "bg-[#D7195B] text-white"
+                    : "bg-gray-200 text-gray-600"
                 }`}
               >
                 {currentStep > step.id ? (

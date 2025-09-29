@@ -168,7 +168,7 @@ export default function Header() {
     <header className="sticky top-0 z-[60]">
       {showBanner && (
   <div
-    className={`overflow-hidden transition-all duration-300 ease-out ${
+    className={`overflow-hidden transition-all duration-300 ease-out mb-12${
       advertState === "expanded"
         ? "h-[60px]"
         : advertState === "compact"

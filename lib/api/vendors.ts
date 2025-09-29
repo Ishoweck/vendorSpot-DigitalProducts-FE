@@ -35,6 +35,15 @@ getAll: (params?: {
 getByBusinessName: (businessName: string) =>
   api.get<any>(`/vendors/getVendorDetails/${businessName}`),
 
-  getWallet: () => api.get<any>("/wallet/getMyWallet"),
+getWallet: () => api.get<any>("/wallet/getMyWallet"),
+
+requestWithdrawal: (data: {
+    amount: number;
+    bankAccount: string;
+    bankName: string;
+    gateway: string; 
+    accountName: string;
+  }) => api.post<any>("/wallet/withdraw", data),
+
 
 }

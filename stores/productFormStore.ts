@@ -24,6 +24,8 @@ interface ProductFormData {
   thumbnail: File | null;
   preview: File | null;
   images: File[];
+  isLink: boolean;
+  linkUrl: string | null ;
   fileMetadata: { name: string; size: number; type: string } | null;
   thumbnailMetadata: { name: string; size: number } | null;
   previewMetadata: { name: string; size: number } | null;
@@ -56,11 +58,25 @@ const initialFormData: ProductFormData = {
   thumbnail: null,
   preview: null,
   images: [],
+  isLink: false,
+  linkUrl: "",
   fileMetadata: null,
   thumbnailMetadata: null,
   previewMetadata: null,
   imagesMetadata: [],
 };
+
+// Define helper outside persist call
+const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+
 
 export const useProductFormStore = create<ProductFormStore>()(
   persist(
@@ -105,25 +121,50 @@ export const useProductFormStore = create<ProductFormStore>()(
           };
         }),
 
-      isStepValid: (step) => {
-        const { formData } = get();
+    isStepValid: (step) => {
+  const { formData } = get();
 
-        switch (step) {
-          case 1:
-            return (
-              formData.name.trim() !== "" &&
-              formData.description.trim() !== "" &&
-              formData.price > 0 &&
-              formData.categoryId !== ""
-            );
-          case 2:
-            return formData.file !== null;
-          case 3:
-            return true;
-          default:
-            return false;
-        }
-      },
+  switch (step) {
+    case 1:
+      const basicValid =
+        formData.name.trim() !== "" &&
+        formData.description.trim() !== "" &&
+        formData.price > 0 &&
+        formData.categoryId !== "";
+      console.log("[Step 1 Valid]:", basicValid);
+      return basicValid;
+
+    case 2:
+      if (formData.isLink) {
+        const linkValid =
+          typeof formData.linkUrl === "string" &&
+          formData.linkUrl.trim() !== "" &&
+          isValidUrl(formData.linkUrl) &&
+          formData.thumbnailMetadata !== null;
+
+        // console.log("[Step 2 Valid - Link]:", linkValid);
+        // console.log("→ linkUrl:", formData.linkUrl);
+        // console.log("→ isValidUrl:", isValidUrl(formData.linkUrl!));clea
+        // console.log("→ thumbnailMetadata:", formData.thumbnailMetadata);
+        return linkValid;
+      } else {
+        const fileValid =
+          formData.fileMetadata !== null &&
+          formData.thumbnailMetadata !== null;
+
+        console.log("[Step 2 Valid - File]:", fileValid);
+        console.log("→ fileMetadata:", formData.fileMetadata);
+        console.log("→ thumbnailMetadata:", formData.thumbnailMetadata);
+        return fileValid;
+      }
+
+    case 3:
+      return true;
+
+    default:
+      return false;
+  }
+},
 
       resetForm: () => set({ formData: initialFormData }),
 

@@ -265,6 +265,8 @@ export const useDeleteProduct = () => {
   });
 };
 
+
+
 export const useDownloadProduct = () => {
   const queryClient = useQueryClient();
 
@@ -275,28 +277,46 @@ export const useDownloadProduct = () => {
     },
     {
       onSuccess: (data: any) => {
-        const link = document.createElement("a");
-        link.href = data.data.downloadUrl;
-        link.setAttribute("download", data.data.filename);
+        const payload = data?.data;
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        if (!payload) {
+          toast.error("Invalid download response");
+          return;
+        }
 
+        // ✅ Handle link-based product
+        if (payload.isLink && payload.linkUrl) {
+          window.open(payload.linkUrl, "_blank");
+          toast.success("Redirecting to external link...");
+        } 
+        // ✅ Handle file-based product
+        else if (payload.downloadUrl) {
+          const link = document.createElement("a");
+          link.href = payload.downloadUrl;
+          link.setAttribute("download", payload.filename || "download");
+
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          toast.success("Download started successfully!");
+
+          if (
+            payload.remainingDownloads !== -1 &&
+            payload.remainingDownloads >= 0
+          ) {
+            toast.success(`${payload.remainingDownloads} downloads remaining`);
+          }
+        } else {
+          toast.error("No valid download URL provided.");
+        }
+
+        // ✅ Refresh orders
         queryClient.invalidateQueries(["orders"]);
         queryClient.invalidateQueries(["order"]);
-
-        toast.success("Download started successfully!");
-
-        if (
-          data.data.remainingDownloads !== -1 &&
-          data.data.remainingDownloads >= 0
-        ) {
-          toast.success(`${data.data.remainingDownloads} downloads remaining`);
-        }
       },
       onError: (error: any) => {
-        toast.error(error.response?.data?.message || "Download failed");
+        toast.error(error?.response?.data?.message || "Download failed");
       },
     }
   );
@@ -473,6 +493,9 @@ export const useDeleteAccount = () => {
 export const useVendorWallet = () => {
   return useQuery(["vendor-wallet"], async () => {
     const res = await vendorsAPI.getWallet();
+
+    console.log(res.data);
+    
     return res.data.data;
   });
 };

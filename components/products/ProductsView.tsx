@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useProducts } from "@/hooks/useAPI";
 import { ProductThumbnail } from "@/components/products/ProductThumbnail";
 import Pagination from "@/components/ui/Pagination";
+import Image from "next/image"; // Make sure this import is present at the top
+
 
 export default function ProductsView() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,9 +31,15 @@ export default function ProductsView() {
         className="bg-[#D7195B] flex items-center justify-center mb-14"
         style={{ height: "280px" }}
       >
-        <h1 className="text-white text-2xl font-medium">
-          Advert Banner Sample
-        </h1>
+     <Image
+  src="/product.png"
+  alt="Advert Banner"
+  width={1440}
+  height={280}
+  className="w-full object-cover"
+  unoptimized
+  priority
+/>
       </div>
 
       <div className="mb-5">
