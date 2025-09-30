@@ -28,14 +28,14 @@ export default function ProductsView() {
   return (
     <div>
       <div
-        className="bg-[#D7195B] flex items-center justify-center mb-14"
-        style={{ height: "280px" }}
+        className="flex items-center justify-center mb-14"
+        // style={{ height: "280px" }}
       >
      <Image
   src="/product.png"
   alt="Advert Banner"
   width={1440}
-  height={280}
+  height={300}
   className="w-full object-cover"
   unoptimized
   priority
