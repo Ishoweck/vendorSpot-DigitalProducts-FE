@@ -397,7 +397,7 @@ export default function Header() {
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="Search for products, brand, categories and vendors"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-black"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg focus:outline-none outline-none focus:ring-2 focus:ring-primary-500 text-black border-none"
                 />
                 {searchValue && (
                   <button
@@ -462,7 +462,7 @@ export default function Header() {
               <button
                 type="submit"
                 onClick={handleSearchSubmit}
-                className="bg-[#FFDD00] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-primary-600 transition-colors"
+                className="bg-[#FFDD00] text-black px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-primary-600 transition-colors"
               >
                 Search
               </button>
